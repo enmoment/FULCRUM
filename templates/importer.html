@@ -4,12 +4,12 @@
 <div class="container">
 <form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
     <a>资源大类：</a>
-    <input type="text" name="resclass" ><br>
+    <input type="text" name="resclass" class="form-control"><br>
     <a>资源小类：</a>
-    <input type="text" name="ressubclass" ><br>
+    <input type="text" name="ressubclass" class="form-control"><br>
     <a>标题：</a>
-    <input type="text" name="title" ><br>
-    <input type=file name=resfiles multiple="multiple"><br>
+    <input type="text" name="title" class="form-control"><br>
+    <input type=file name=resfiles multiple="multiple" ><br>
     <input type=submit value="上传">
 </form>
 
