@@ -14,10 +14,10 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     BOOTSTRAP_SERVER_LOCAL = True
     RESULT_SAVE_DIRECTORY = 'results'
-    VIDEO_OUTPUT_FOLDER = os.path.join(os.path.abspath('.'), 'output')
+    VIDEO_OUTPUT_FOLDER = os.path.join(basedir, 'output')
 
     PERMANENT_SESSION_LIFETIME = timedelta(days=30)
     RES_FOLDER = 'RES'
-    UPLOADED_RESFILES_DEST = os.path.join(os.path.abspath('.'),'upload')
+    UPLOADED_RESFILES_DEST = os.path.join(basedir,'upload')
     TYPES = tuple('jpg jpe jpeg png gif svg bmp avi mp4 wmv MP4'.split())
     UPLOADED_RESFILES_ALLOW = TYPES

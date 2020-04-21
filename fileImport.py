@@ -3,13 +3,14 @@ import os, hashlib, shutil
 from psycopg2 import DataError
 from flask import current_app
 
+
 class FileImporter():
     filePath = ''
     resclass = ''
     ressubclass = ''
 
     def __init__(self, filePath='', resClass='', resSubClass=''):
-        self.filePath = os.path.join(os.path.abspath('.'), 'upload', filePath)
+        self.filePath = os.path.join(current_app.config.get('UPLOADED_RESFILES_DEST'), filePath)
         self.resclass = resClass
         self.ressubclass = resSubClass
         print(self.filePath)
