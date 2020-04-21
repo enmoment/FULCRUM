@@ -1,0 +1,60 @@
+{% extends "bootstrap/base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block title %} {{title}}  {% endblock %}
+
+
+
+
+{%block metas%}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{%endblock metas%}
+
+
+{%- block styles %}
+<!-- Bootstrap -->
+<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/normalize.css">
+<link rel="stylesheet" href="/static/css/font-awesome.css">
+<!--<link rel="stylesheet" href="static/css/bootstrap.min.css">-->
+<link rel="stylesheet" href="/static/css/templatemo-style.css">
+<!--<script src="/static/js/vendor/modernizr-2.6.2.min.js"></script>-->
+<!--<script src="/static/js/plugins.js"></script>-->
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!--<script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.10.2.min.js"><\/script>')</script>-->
+<!--<script src="/static/js/min/plugins.min.js"></script>-->
+<script src="/static/js/min/main.min.js"></script>
+{%- endblock styles %}
+
+
+{% block body -%}
+<!-- <div class="content-bg"></div>-->
+<!--        <div class="bg-overlay"></div>-->
+<!--    {% block navbar %}-->
+        {%  include 'navbar.html'  %}
+<!--    {%- endblock navbar %}-->
+
+
+    {% block content %}
+
+
+
+        <div class="container">
+            {% block main_content %}
+                <!--主要内容-->
+            {% endblock main_content %}
+        </div>
+    {% endblock content %}
+
+
+{%- endblock body %}
+
+
+{% block scripts %}
+
+{%- endblock scripts %}
+
+

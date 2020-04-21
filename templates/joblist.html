@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<div class="container">
+    <table class="table table-bordered" id="contenttable">
+
+        <tr>
+            <th>序号</th>
+            <th>任务名称</th>
+            <th>任务状态</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+            <th>用户名称</th>
+            <th>操作</th>
+        </tr>
+        {% for result in results %}
+        <tr id="{{result['job_id']}}">
+            <td>{{loop.index}}</td>
+            <td>{{result['job_name']}}</td>
+            <td>{% if result['job_status'] == '1' %}完成
+                {% else %}待处理 {% endif %}
+            </td>
+            <td>{{result['start_date'] + ' '+result['start_time']}}</td>
+            <td>{{result['finish_date'] + ' '+result['finish_time']}}</td>
+            <td>{{result['username']}}</td>
+            <td>
+                {% if result['job_status'] == '1' %}
+                <!--                <a href="/downloads?jobid={{result['job_id']}}">下载</a>-->
+                <button type="button" class="btn btn-primary" onclick="download($(this).parent().parent().attr('id'))">
+                    下载
+                </button>
+                {% endif %}
+                <button type="button" class="btn btn-success" onclick="reloadJob($(this).parent().parent().attr('id'))">
+                    重启
+                </button>
+                <button type="button" class="btn btn-danger" onclick="deleteJob($(this).parent().parent().attr('id'))">
+                    删除
+                </button>
+            </td>
+        </tr>
+        {%endfor%}
+    </table>
+</div>
+<script>
+    function download(jobid) {
+        var link = '/downloads?jobid=' + jobid;
+        window.location.href = link;
+    }
+
+    function deleteJob(jobid) {
+        $.post("/joblist",
+            {
+                'oprate': 'delete',
+                'jobid': jobid
+            },
+            function (data, status) {
+                if (status == 'success' && data != '') {
+                    window.location.reload();
+
+                } else {
+                    alert('操作失败')
+                }
+            });
+
+
+    }
+    function reloadJob(jobid) {
+            $.post("/joblist",
+                {
+                    'oprate': 'reload',
+                    'jobid': jobid
+                },
+                function (data, status) {
+                    if (status == 'success' && data == 'success') {
+                        window.location.href = '/contentlist';
+
+                    } else {
+                        alert('操作失败')
+                    }
+                });
+        }
+</script>
+
+{% endblock main_content %}

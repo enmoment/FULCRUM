@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+
+<div class="container">
+    <div class="row">
+        {% for pic in pics %}
+        <div class="col-sm-6 col-md-3">
+            <div class="thumbnail">
+                {% if pic.res_type == 'pic' %}
+                <img class="" src="/res/{{pic.resource_id}}" onclick="showimage(this.src)">
+                {% else %}
+                <video mediatype="video" width="250"
+                       src="/res/{{pic.resource_id}}" controls preload="metadata"></video>
+                {% endif %}
+                <div class="caption" id="{{pic.resource_id}}">
+
+                    <button type="button" class="btn btn-primary" onclick="addmedia(this)">添加</button>
+                    <button type="button" class="btn btn-danger" id="del_{{pic.resource_id}}" hidden="true"
+                            onclick="delmedia(this)">删除
+                    </button>
+                </div>
+            </div>
+
+
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="modal" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="ShowImage_Form">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div id="img_show"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function addmedia(media) {
+        var mediaid = $(media).parent().attr("id");
+        var delid = "#del_" + mediaid;
+        $.post("/medialist",
+            {
+                'oprate': 'add',
+                // 'mediatype': 'pic',
+                'mediaid': mediaid
+            },
+            function (data, status) {
+                //debugger;
+                if (status == 'success' && data != '') {
+                    //alert(data);
+                    //$(btn_del).show();
+                    $(delid).show()
+
+
+                } else {
+                    alert('添加内容失败，请尝试其他内容')
+                }
+            });
+    }
+
+    function delmedia(media) {
+        var mediaid = $(media).parent().attr("id");
+        var delid = "#del_" + mediaid;
+        $.post("/medialist",
+            {
+                'oprate': 'delete',
+                'mediaid': mediaid
+            },
+            function (data, status) {
+                if (status == 'success' && data != '') {
+                    $(delid).hide()
+
+                } else {
+                    alert('添加内容失败，请尝试其他内容')
+                }
+            });
+
+    }
+
+    function showimage(source) {
+        $("#ShowImage_Form").find("#img_show").html("<img src='" + source + "' class='carousel-inner img-responsive img-rounded' >");
+        $("#ShowImage_Form").modal();
+    }
+
+</script>
+
+<!--<script type="text/javascript">-->
+<!--    function selectClass(obj) {-->
+<!--        var value = obj.options[obj.selectedIndex].value;-->
+<!--        alert(value);-->
+<!--    }-->
+
+<!--    function selectSubclass(obj) {-->
+<!--        var value = obj.options[obj.selectedIndex].value;-->
+<!--        alert(value);-->
+<!--    }-->
+<!--</script>-->
+
+{% endblock %}

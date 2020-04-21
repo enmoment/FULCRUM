@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block main_content %}
+<div class="container">
+
+    <!--        类型选择框-->
+    <select class="form-control form-control-lg" id="restype" onchange="refreshResClass()">
+        {%for type in types%}
+        <option>{{type[0]}}</option>
+        {%endfor%}
+    </select>
+    <br>
+    <!--    资源大类选择框-->
+    <select class="form-control" id="resclass" onchange="refreshRessubClass()">
+
+    </select>
+    <!--    资源大类刷新-->
+    <script type="text/javascript">
+        function refreshResClass() {
+            var type = $("#restype option:selected").text();
+            $.ajax({
+                type: "post",
+                url: "/getresclass",
+                data: {"restype": type},
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                    $("#resclass").empty();
+                    var opstr = "";
+                    //var i = 0;
+                    for (cl in data) {
+                        opstr = "<option >" + data[cl] + "</option>";
+                      //  i += 1;
+                        $("#resclass").append(opstr)
+                    }
+                    refreshRessubClass()
+
+                }
+
+
+            });
+        }
+
+
+    </script>
+    <br>
+    <!--    资源小类选择框-->
+    <select class="form-control" id="ressubclass">
+
+    </select>
+    <!--    资源小类刷新-->
+    <script type="text/javascript">
+        function refreshRessubClass() {
+
+            var restype = $("#restype option:selected").text();
+            var resclass = $("#resclass option:selected").text();
+            $.ajax({
+                type: "post",
+                url: "/getressub",
+                data: {
+                    "restype":restype,
+                    "resclass": resclass
+
+                },
+                dataType: "json",
+                success: function (data) {
+                    debugger;
+                   // var i = 0;
+                    var opstr = "";
+                    $("#ressubclass").empty();
+                    for (cl in data) {
+                        opstr = "<option >" + data[cl] + "</option>";
+                     //   i += 1;
+                        $("#ressubclass").append(opstr)
+                    }
+                }
+
+
+            });
+        }
+
+
+    </script>
+    <br>
+
+    <button type="submit" class="btn btn-default" onclick="refreshTable()">查询</button>
+
+    <br>
+    <table class="table table-bordered" id="datatable">
+        <tr>
+            <th>序号</th>
+            <th>标题</th>
+            <th>资源数量</th>
+        </tr>
+        {% for title in titles %}
+        <tr>
+            <td>{{loop.index}}</td>
+            <td>{{title[0]}}</td>
+            <td>{{title[1]}}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+    <script type="text/javascript">
+        function refreshTable() {
+
+            var restype = $("#restype option:selected").text();
+            var resclass = $("#resclass option:selected").text();
+            var ressubclass = $("#ressubclass option:selected").text();
+            var tableh = "<tr><th>序号</th><th>标题</th><th>资源数量</th></tr>";
+            var title_ref = "getpics/"+restype+"/"+resclass+"/"+ressubclass+"/"
+            $("#datatable").empty();
+            $("#datatable").append(tableh);
+            $.ajax({
+                type: "post",
+                url: "/gettitles",
+                data: {
+                    "restype": restype,
+                    "resclass": resclass,
+                    "ressubclass": ressubclass
+                },
+                dataType: "json",
+                success: function (data) {
+                    var i = 0;
+                    debugger;
+                    var trstr = "";
+                    for (td in data) {
+
+                        title = data[td][0]
+                        trstr = "<tr><td>"+
+                            td+"</td><td><a href='"+title_ref+title+"'>"+
+                            title+"</a></td><td>"+
+                            data[td][1]+ "</td></tr>";
+                        $("#datatable").append(trstr);
+                    }
+
+
+                }
+
+
+            });
+        }
+
+        $(function () {
+            refreshResClass();
+        });
+    </script>
+</div>
+{% endblock %}

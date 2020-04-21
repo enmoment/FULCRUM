@@ -1,0 +1,15 @@
+    # 文件导入FORM
+    iform = ImportForm()
+    if iform.validate_on_submit():
+        f = iform.upload.data
+        filename = iform.pfName.data
+        path = os.path.join(os.path.abspath('.'), 'upload', f.filename)
+        # 文件已存在则删除
+        if os.path.exists(path):
+            os.remove(path)
+        f.save(path)
+        # 保存文件信息到数据库
+        file = FileInfo('upload', filename, path)
+        db.session.add(file)
+        db.session.commit()
+    allfiles = getAllFiles()

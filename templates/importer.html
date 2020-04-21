@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<div class="container">
+<form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
+    <a>资源大类：</a>
+    <input type="text" name="resclass" ><br>
+    <a>资源小类：</a>
+    <input type="text" name="ressubclass" ><br>
+    <a>标题：</a>
+    <input type="text" name="title" ><br>
+    <input type=file name=resfiles multiple="multiple"><br>
+    <input type=submit value="上传">
+</form>
+
+
+
+<!--wtf.quick_form(impform,method='post')}}-->
+
+  <!--用户名：<input type="text">https://www.jianshu.com/p/7e16877757f8-->
+  <!--密码：<input type="password">https://www.jianshu.com/p/9d6da9b76d70-->
+
+<!--<div class="input-group input-group-sm mb-3">-->
+
+<!--<div class="input-group mb-3">-->
+<!--  <div class="input-group-prepend">-->
+<!--    <span class="input-group-text" id="res-class">素材大类</span>-->
+<!--  </div>-->
+<!--  <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">-->
+<!--</div>-->
+
+<!--<div class="input-group mb-3">-->
+<!--  <div class="input-group-prepend">-->
+<!--    <span class="input-group-text" id="res-subclass">素材小类</span>-->
+<!--  </div>-->
+<!--  <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">-->
+<!--</div>-->
+
+
+
+
+<!--</div>-->
+
+
+
+
+</div>
+
+
+
+
+
+
+{% endblock main_content %}

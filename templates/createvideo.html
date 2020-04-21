@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<div class="container">
+    <div>
+        <input id="jname" type="text" class="form-control form-control-sm" value=""  placeholder="任务名称">
+        <br>
+        <button type="button" class="btn btn-danger" onclick=" create()">生成视频</button>
+    </div>
+
+    <br>
+    <table class="table table-bordered" id="contenttable" >
+        <tr >
+            <th align="center">内容</th>
+            <th align="center">属性</th>
+            <th align="center">操作</th>
+        </tr>
+<!--        {{current}}-->
+        {% for content in contents %}
+        <tr id="{{content['mediaid']}}">
+            <td>
+
+                <a href="#" class="thumbnail">
+                    {% if content['mediatype'] == 'video' %}
+                    <video mediatype="video" width="250" src="/res/{{content['mediaid']}}"
+                     controls preload="metadata"></video>
+                    {% else%}
+                    <img src="/res/{{content['mediaid']}}">
+                    {% endif %}
+                </a>
+
+            </td>
+            <td>
+                <label class="">持续时间：</label>
+                <br>
+                <input type="text" class="form-control" value="{{content['duration']}}" id=""
+                       onchange="changeduration(this)">
+
+
+            </td>
+
+            <td>
+                <button type="button" class="btn btn-danger" onclick="delmedia(this)">删除</button>
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+    <script>
+        function changeduration(t) {
+            var duration = t.value;
+            var mediaid = $(t).parent().parent().attr("id");
+            //alert(mediaid)
+            $.post("/medialist",
+                {
+                    'oprate': 'duration',
+                    'duration': duration,
+                    'mediaid': mediaid,
+                },
+                function (data, status) {
+                    if (status == 'success' && data != '') {
+                        // alert(data);
+                        // debugger;
+                        window.location.reload();
+
+                    } else {
+                        alert('修改失败')
+                    }
+                });
+        }
+
+        // function getCookie(cname) {
+        //     var name = cname + "=";
+        //     var ca = document.cookie.split(';');
+        //     for (var i = 0; i < ca.length; i++) {
+        //         var c = ca[i].trim();
+        //         if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+        //     }
+        //     return "";
+        // }
+        function delmedia(t) {
+            var mediaid = $(t).parent().parent().attr("id");
+            $.post("/medialist",
+                {
+                    'oprate': 'delete',
+                    'mediaid': mediaid,
+                },
+                function (data, status) {
+                    if (status == 'success' && data != '') {
+                        // alert(data);
+                        // debugger;
+                        window.location.reload();
+
+                    } else {
+                        alert('修改失败')
+                    }
+                });
+        }
+
+        function create() {
+            var jobname = $("#jname").val();
+            if ("" == jobname) {
+                alert("请输入任务名称");
+            } else {
+                $.post("/createvideo",
+                    {
+                        'oprate': 'create',
+                        'jobname':jobname
+                    },
+                    function (data, status) {
+                        if (status == 'success' && data != 'Failed') {
+                            alert('任务添加成功')
+                            window.location.reload();
+
+                        } else {
+                            alert('新建任务失败')
+                        }
+                    });
+            }
+
+
+        }
+    </script>
+
+
+</div>
+
+{% endblock main_content %}
