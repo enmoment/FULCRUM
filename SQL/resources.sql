@@ -13,7 +13,7 @@ create table resources
     comment1        text,
     comment2        text,
     comment3        text,
-    comment4        text,　
+    comment4        text,
     comment5        text
 );
 

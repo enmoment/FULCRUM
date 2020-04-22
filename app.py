@@ -55,7 +55,7 @@ def getrescla():
     resclasses = db.session.query(Resources.res_class).filter(Resources.res_type == restype).group_by(
         Resources.res_class).all()
 
-    resclass_json = dbToJson(resclasses)
+    resclass_json = json.dumps(resclasses)
     return resclass_json
 
 
@@ -67,7 +67,7 @@ def getressub():
     resclasses = db.session.query(Resources.res_subclass).filter(Resources.res_class == resclass,
                                                                  Resources.res_type == restype).group_by(
         Resources.res_subclass).all()
-    ressubclass_json = dbToJson(resclasses)
+    ressubclass_json = json.dumps(resclasses)
     return ressubclass_json
 
 
@@ -77,11 +77,11 @@ def gettitles():
     restype = request.values['restype']
     resclass = request.values['resclass']
     ressubclass = request.values['ressubclass']
-    titles = db.session.query(Resources.res_title, func.count('1'), func.max(Resources.imp_time)).filter(
+    titles = db.session.query(Resources.res_title.label('res_title'), func.count('1').label('res_count'), func.max(Resources.imp_time).label('updatetime')).filter(
         Resources.res_type == restype,
         Resources.res_class == resclass, Resources.res_subclass == ressubclass).group_by(
         Resources.res_title).order_by(func.max(Resources.imp_time).desc()).all()
-    title_json = dbToJson(titles)
+    title_json = json.dumps(titles)
     return title_json
 
 

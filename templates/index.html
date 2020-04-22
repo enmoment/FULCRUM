@@ -28,7 +28,7 @@
                     var opstr = "";
                     //var i = 0;
                     for (cl in data) {
-                        opstr = "<option >" + data[cl] + "</option>";
+                        opstr = "<option >" + data[cl]['res_class'] + "</option>";
                       //  i += 1;
                         $("#resclass").append(opstr)
                     }
@@ -68,7 +68,7 @@
                     var opstr = "";
                     $("#ressubclass").empty();
                     for (cl in data) {
-                        opstr = "<option >" + data[cl] + "</option>";
+                        opstr = "<option >" + data[cl]['res_subclass'] + "</option>";
                      //   i += 1;
                         $("#ressubclass").append(opstr)
                     }
@@ -121,15 +121,15 @@
                 dataType: "json",
                 success: function (data) {
                     var i = 0;
-                    debugger;
+
                     var trstr = "";
                     for (td in data) {
-
-                        title = data[td][0]
+                        debugger;
+                        title = data[td]['res_title']
                         trstr = "<tr><td>"+
                             td+"</td><td><a href='"+title_ref+title+"'>"+
                             title+"</a></td><td>"+
-                            data[td][1]+ "</td></tr>";
+                            data[td]['res_count']+ "</td></tr>";
                         $("#datatable").append(trstr);
                     }
 
