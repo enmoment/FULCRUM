@@ -33,7 +33,7 @@ def create(jobid, contents_json):
 # create(1, contentstr)
 def getpicClip(size,respath,duration):
     clips = []
-    clip = ImageClip(img=respath, duration=duration)
+    clip = ImageClip(img=respath, duration=float(duration))
     clips.append(clipTrans(size=size,clip=clip))
     return clips
 def getvideoClip(size,respath,duration):
