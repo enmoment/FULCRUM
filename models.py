@@ -53,7 +53,7 @@ class Jobs(db.Model):
     start_time = db.Column(db.String(), primary_key=False, nullable=False)
     finish_date = db.Column(db.String(), primary_key=False, nullable=False)
     finish_time = db.Column(db.String(), primary_key=False, nullable=False)
-    outputpath = db.Column(db.String(), primary_key=False, nullable=False)
+    filename = db.Column(db.String(), primary_key=False, nullable=False)
     comment = db.Column(db.String(), primary_key=False, nullable=True)
 
     def __init__(self, job_id='', job_name='', job_status='0', contents='',

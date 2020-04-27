@@ -35,10 +35,12 @@ create table jobs
     finish_date text,
     finish_time text,
     username    text,
-    outputpath  text,
+    filename  text,
+    thumbnail   text,
     comment     text
 );
 
+drop table jobs;
 select * from jobs;
 
 truncate  table jobs;

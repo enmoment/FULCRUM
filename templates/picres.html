@@ -11,8 +11,8 @@
                 {% if pic.res_type == 'pic' %}
                 <img class="" src="/res/{{pic.resource_id}}" onclick="showimage(this.src)">
                 {% else %}
-                <video mediatype="video" width="250"
-                       src="/res/{{pic.resource_id}}" controls preload="metadata"></video>
+                <video mediatype="video" width="250" src="/res/{{pic.resource_id}}" controls
+                       preload="metadata" poster="/thumbnail/res/{{pic.resource_id}}"></video>
                 {% endif %}
                 <div class="caption" id="{{pic.resource_id}}">
 

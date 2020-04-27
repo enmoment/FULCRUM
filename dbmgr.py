@@ -4,13 +4,13 @@ def getconn():
     return psycopg2.connect(database="postgres", user="postgres", password="postgres", host="localhost", port="5432")
 
 
-def update_job_status(jobid,status,filename):
+def update_job_status(jobid,status,filename,thumbnail):
     conn = getconn()
     cur = conn.cursor()
     finish_date = time.strftime("%Y-%m-%d", time.localtime())
     finish_time = time.strftime("%H:%M:%S", time.localtime())
-    sql = "update jobs set job_status = '%s' , outputpath= '%s', finish_date='%s',finish_time='%s'  " \
-          "where job_id = %s;" % (str(status), filename,finish_date,finish_time, str(jobid))
+    sql = "update jobs set job_status = '%s' , filename= '%s', finish_date='%s',finish_time='%s' ,thumbnail='%s'  " \
+          "where job_id = %s;" % (str(status), filename,finish_date,finish_time,thumbnail, str(jobid))
     print(sql)
     cur.execute(sql)
     conn.commit()

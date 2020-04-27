@@ -102,7 +102,15 @@ def res(resid):
     resPath = db.session.query(Resources).filter(Resources.resource_id == resid).first()
     return send_from_directory(resPath.res_path, resPath.file_name)
 
+#Get tumbnail
+@app.route('/thumbnail/<type>/<resid>', methods=['GET', 'POST'])
+def thumbnail(type,resid):
+    if type == 'res':
+        thumPath = db.session.query(Resources).filter(Resources.resource_id == resid).first()
 
+    else:
+        thumPath =''
+    return send_from_directory(thumPath.res_path, thumPath.comment1)
 # 素材导入
 @app.route('/importer', methods=['POST', 'GET'])
 def importer():
@@ -202,11 +210,11 @@ def joblist():
         return render_template('joblist.html', title='结果下载', results=results)
 
 
-# 任务清单
+# download output
 @app.route('/downloads', methods=['GET', 'POST'])
 def downloads():
     jobid = request.values['jobid']
-    file = db.session.query(Jobs.outputpath).filter(Jobs.job_id == jobid).first()
+    file = db.session.query(Jobs.filename).filter(Jobs.job_id == jobid).first()
     response = send_from_directory(Config.VIDEO_OUTPUT_FOLDER, file[0])
     return response
 

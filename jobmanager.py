@@ -11,10 +11,7 @@ def start(jobid):
     except:
         return None
 
-# def getResPath(mediaid):
-#     respath = db.session.query(Resources.res_path,Resources.file_name).filter(Resources.resource_id == mediaid).first()
-#     path = os.path.join(respath[0],respath[1])
-#     return path
+
 
 def savejob(jobname,contents_str,username):
     job = Jobs(job_name=jobname,contents=contents_str,username=username)

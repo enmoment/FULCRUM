@@ -2,7 +2,7 @@ from models import db, Resources
 import os, hashlib, shutil
 from psycopg2 import DataError
 from flask import current_app
-
+from moviepy.editor import *
 
 class FileImporter():
     filePath = ''
@@ -35,7 +35,8 @@ class FileImporter():
                 # 如果没有被清理则导入数据库
                 if resPath != None:
                     res = Resources(res_type=resPath[2], res_class=self.resclass, res_subclass=self.ressubclass,
-                                    res_title=res_title, res_origin='PC', res_path=resPath[0], file_name=resPath[1])
+                                    res_title=res_title, res_origin='PC', res_path=resPath[0], file_name=resPath[1],
+                                    comment1=resPath[3])
                     try:
                         db.session.add(res)
                         db.session.commit()
@@ -46,6 +47,7 @@ class FileImporter():
 
     # 清理文件并拷贝到资源目录下
     def clean(self, filepath):
+        frameName = ''
         clearner = ['.chm', 'Sky.jpg', '.gif', '.mht', '.url', '.torrent']
         fileName = filepath.split('/')[-1]
         fileext = '.' + fileName.split('.')[-1]
@@ -59,13 +61,18 @@ class FileImporter():
 
             Dir = os.path.join(current_app.config.get('RES_FOLDER'), self.resclass, self.ressubclass, filepath.split('/')[-2])
             # sysDir = os.path.join(os.path.abspath('.'), Dir)
-            newName = hashlib.md5(('66' + filepath).encode(encoding='utf-8')).hexdigest() + fileext
+            nameHash = hashlib.md5(('66' + filepath).encode(encoding='utf-8')).hexdigest()
+            newName = nameHash + fileext
             savePath = os.path.join(Dir, newName)
             if not os.path.exists(Dir):
                 os.makedirs(Dir)
                 print("目录创建成功！:", Dir)
+            if type == 'video':
+                clip = VideoFileClip(filepath)
+                frameName = nameHash+'.png'
+                clip.save_frame(filename=os.path.join(Dir,frameName))
             shutil.move(filepath, savePath)
-            return Dir, newName, type
+            return Dir, newName, type,frameName
 
     # 根据扩展名获取资源类型
     def getResType(self, type):

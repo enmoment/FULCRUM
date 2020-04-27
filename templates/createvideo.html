@@ -22,8 +22,8 @@
 
                 <a href="#" class="thumbnail">
                     {% if content['mediatype'] == 'video' %}
-                    <video mediatype="video" width="250" src="/res/{{content['mediaid']}}"
-                     controls preload="metadata"></video>
+                    <video mediatype="video" width="150" src="/res/{{content['mediaid']}}"
+                     controls preload="metadata" poster="/thumbnail/res/{{content['mediaid']}}"></video>
                     {% else%}
                     <img src="/res/{{content['mediaid']}}">
                     {% endif %}
@@ -31,7 +31,7 @@
 
             </td>
             <td>
-                <label class="">持续时间：</label>
+<!--                <label class="">持续时间：</label>-->
                 <br>
                 <input type="text" class="form-control" value="{{content['duration']}}" id=""
                        onchange="changeduration(this)">

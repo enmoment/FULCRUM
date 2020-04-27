@@ -21,3 +21,5 @@ class Config(object):
     UPLOADED_RESFILES_DEST = os.path.join(basedir,'upload')
     TYPES = tuple('jpg jpe jpeg png gif svg bmp avi mp4 wmv MP4'.split())
     UPLOADED_RESFILES_ALLOW = TYPES
+
+
