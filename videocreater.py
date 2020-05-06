@@ -3,7 +3,7 @@ from flask import json
 import dbmgr
 from config import Config
 
-def create(jobid, contents_json):
+def create(jobid, contents_json,jobname):
     contents = json.loads(contents_json)
     clips = []
     i = 0  # 尺寸初始化标志
@@ -25,10 +25,9 @@ def create(jobid, contents_json):
 
         i += 1
     finalclip = concatenate_videoclips(clips)
-    # filename = "%s.mp4" % str(jobid)
-    # txt_clip = TextClip("My Holidays 2013", fontsize=70, color='white')
-    # txt_clip = txt_clip.set_pos('center').set_duration(10)
-    # finalclip = CompositeVideoClip([finalclip, txt_clip])
+    txt_clip = TextClip(str(jobname), fontsize=70, color='white')
+    txt_clip = txt_clip.set_pos(lambda t: ('center', 150+t)).set_duration(3)
+    finalclip = CompositeVideoClip([finalclip, txt_clip])
     dir = Config.VIDEO_OUTPUT_FOLDER
     filename = str(jobid)+'.mp4'
     thumbnail = str(jobid)+'.png'

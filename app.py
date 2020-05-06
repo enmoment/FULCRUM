@@ -1,15 +1,15 @@
 import numpy
 from flask import (Flask, render_template, redirect, url_for, request, session, send_from_directory, json,
-                   make_response)
+                   make_response,flash)
 from flask_bootstrap import Bootstrap
+from flask_login import LoginManager, login_required,login_user
 from flask_uploads import UploadSet, configure_uploads
 from sqlalchemy import func
-import cookiemgr
-import jobmanager
+import cookiemgr,jobmanager
 from config import Config
 from fileImport import FileImporter
 from forms import LoginForm
-from models import db, Resources, Jobs
+from models import db, Resources, Jobs,Account
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -17,7 +17,13 @@ bootstrap = Bootstrap(app)
 db.init_app(app)
 resfiles = UploadSet('RESFILES')
 configure_uploads(app, resfiles)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "/login"
 
+@login_manager.user_loader
+def load_user(userid):
+    return Account.query.filter(Account.user_id == userid).first()
 
 @app.route('/', methods=['GET', 'POST'])
 def default():
@@ -33,15 +39,22 @@ def default():
 def login():
     login_form = LoginForm()
     if login_form.validate_on_submit():
-        user = login_form.username.data
-        response = redirect(url_for('index'))
-        response.set_cookie('username', user)
-        return response
+        username = login_form.username.data
+        password = login_form.password.data
+        user = Account.query.filter(Account.name == username).first()
+        if user and user.check_password(password):
+            login_user(user=user, remember=True)
+            response = redirect(url_for('index'))
+            response.set_cookie('username', username)
+            flash('Logged in successfully.')
+            return response
+
     return render_template('login.html', title='login', loginform=login_form)
 
 
 # 主页
 @app.route('/index', methods=['GET', 'POST'])
+@login_required
 def index(restype='', resclass='', subclass=''):
     types = db.session.query(Resources.res_type).group_by(Resources.res_type).all()
 
@@ -50,6 +63,7 @@ def index(restype='', resclass='', subclass=''):
 
 # 获取资源大类
 @app.route('/getresclass', methods=['POST'])
+@login_required
 def getrescla():
     restype = request.values['restype']
     resclasses = db.session.query(Resources.res_class).filter(Resources.res_type == restype).group_by(
@@ -61,6 +75,7 @@ def getrescla():
 
 # 获取资源小类
 @app.route('/getressub', methods=['POST'])
+@login_required
 def getressub():
     restype = request.values['restype']
     resclass = request.values['resclass']
@@ -73,6 +88,7 @@ def getressub():
 
 # 获取标题
 @app.route('/gettitles', methods=['POST'])
+@login_required
 def gettitles():
     restype = request.values['restype']
     resclass = request.values['resclass']
@@ -87,6 +103,7 @@ def gettitles():
 
 # 获取资源明细
 @app.route('/getpics/<type>/<rclass>/<subclass>/<title>', methods=['GET', 'POST'])
+@login_required
 def getpics(type, rclass, subclass, title):
     print(request)
     reses = db.session.query(Resources).filter(
@@ -98,12 +115,14 @@ def getpics(type, rclass, subclass, title):
 
 # 获取资源文件
 @app.route('/res/<resid>', methods=['GET', 'POST'])
+@login_required
 def res(resid):
     resPath = db.session.query(Resources).filter(Resources.resource_id == resid).first()
     return send_from_directory(resPath.res_path, resPath.file_name)
 
 #Get tumbnail
 @app.route('/thumbnail/<type>/<resid>', methods=['GET', 'POST'])
+@login_required
 def thumbnail(type,resid):
     if type == 'res':
         thumPath = db.session.query(Resources).filter(Resources.resource_id == resid).first()
@@ -113,11 +132,13 @@ def thumbnail(type,resid):
     return send_from_directory(thumPath.res_path, thumPath.comment1)
 # 素材导入
 @app.route('/importer', methods=['POST', 'GET'])
+@login_required
 def importer():
     return render_template('importer.html', title='资源导入')
 
 
 @app.route('/upload', methods=['POST', 'GET'])
+@login_required
 def upload():
     if request.method == 'POST' and 'resfiles' in request.files:
         resclass = request.values.get('resclass')
@@ -132,6 +153,7 @@ def upload():
 
 # 手工导入文件
 @app.route('/fileimport/<path>/<resclass>/<ressubclass>', methods=['GET'])
+@login_required
 def fileimport(path, resclass, ressubclass):
     importer = FileImporter(path, resclass, ressubclass)
     return 'ok'
@@ -139,6 +161,7 @@ def fileimport(path, resclass, ressubclass):
 
 # 添加媒体文件
 @app.route('/medialist', methods=['POST'])
+@login_required
 def medialist():
     username = request.cookies.get('username')
     oprate = request.values['oprate']
@@ -158,6 +181,7 @@ def medialist():
 
 
 @app.route('/contentlist', methods=['GET', 'POST'])
+@login_required
 def contentlist():
     current_content = cookiemgr.sessioinToContents()
 
@@ -166,6 +190,7 @@ def contentlist():
 
 # 开始生成视频
 @app.route('/createvideo', methods=['GET', 'POST'])
+@login_required
 def createvideo():
     oprate = request.values['oprate']
     if oprate == 'create':
@@ -184,6 +209,7 @@ def createvideo():
 
 # 任务清单
 @app.route('/joblist', methods=['GET', 'POST'])
+@login_required
 def joblist():
     if request.method == 'POST':
         oprate = request.values['oprate']
@@ -212,6 +238,7 @@ def joblist():
 
 # download output
 @app.route('/downloads', methods=['GET', 'POST'])
+@login_required
 def downloads():
     jobid = request.values['jobid']
     file = db.session.query(Jobs.filename).filter(Jobs.job_id == jobid).first()
@@ -231,6 +258,7 @@ def dbToJson(db):
 
 
 @app.route('/initdb', methods=['GET', 'POST'])
+@login_required
 def initdb():
     db.create_all()
     return 'Success'

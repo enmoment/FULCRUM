@@ -46,3 +46,17 @@ select * from jobs;
 truncate  table jobs;
 
 update jobs set job_status = '0' where job_id = 2;
+
+
+
+create table Account
+(
+    user_id     serial   not null constraint user_id_pk primary key,
+    name   text not null,
+    password_hash    text not null,
+    status      text not null,
+    comment     text
+);
+select * from Account;
+
+

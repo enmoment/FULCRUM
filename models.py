@@ -1,7 +1,12 @@
 # from app import db
 from flask_sqlalchemy import SQLAlchemy
 import time
-
+from bottle import unicode
+from flask_login import UserMixin
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+    )
 db = SQLAlchemy()
 
 
@@ -67,3 +72,29 @@ class Jobs(db.Model):
         self.comment = str.strip(comment)
         self.finish_date = ''
         self.finish_time = ''
+
+
+class Account(db.Model,UserMixin):
+    user_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(),nullable=False)
+    #password_hash = db.Column(db.String())
+    password_hash = db.Column(db.String(),nullable=False)
+    status = db.Column(db.String(),nullable=False)
+
+    def __init__(self,username='',password=''):
+        # self.accountNumber = account_number
+        self.password_hash = self.set_password(password)
+        self.name = username
+        self.status = '1'
+
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
+
+    def set_password(self, password):
+        return generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def get_id(self):
+        return self.user_id

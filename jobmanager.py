@@ -6,7 +6,8 @@ import _thread
 def start(jobid):
     try:
         contents_json = db.session.query(Jobs.contents).filter(Jobs.job_id == jobid).first()
-        _thread.start_new_thread(videocreater.create,(jobid,contents_json[0]))
+        job_name = db.session.query(Jobs.job_name).filter(Jobs.job_id == jobid).first()
+        _thread.start_new_thread(videocreater.create,(jobid,contents_json.contents,job_name.job_name))
         return 'success'
     except:
         return None
