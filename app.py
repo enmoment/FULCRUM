@@ -5,7 +5,7 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_required,login_user
 from flask_uploads import UploadSet, configure_uploads
 from sqlalchemy import func
-import cookiemgr,jobmanager
+import cookiemgr,jobmanager,airctrl
 from config import Config
 from fileImport import FileImporter
 from forms import LoginForm
@@ -24,6 +24,7 @@ login_manager.login_view = "/login"
 @login_manager.user_loader
 def load_user(userid):
     return Account.query.filter(Account.user_id == userid).first()
+
 
 @app.route('/', methods=['GET', 'POST'])
 def default():
@@ -256,12 +257,25 @@ def dbToJson(db):
     str_json = json.dumps(list_json, indent=2, ensure_ascii=False)
     return str_json
 
+@app.route('/air', methods=['GET'])
+def air():
+    teminfos = airctrl.getValues('temperature')
+    return render_template('air.html', teminfos=teminfos)
 
-@app.route('/initdb', methods=['GET', 'POST'])
-@login_required
-def initdb():
-    db.create_all()
-    return 'Success'
+@app.route('/aircon', methods=['POST'])
+def aircon():
+    opra = request.values['operation']
+    infotype = request.values['infotype']
+    value = request.values['value']
+    location = request.values['location']
+    if opra == 'update':
+        result = airctrl.setValues(infotype,location,value)
+    elif opra == 'get':
+        result = airctrl.getValues(infotype)
+    else:
+        return 'error'
+    return result
+
 
 
 if __name__ == '__main__':

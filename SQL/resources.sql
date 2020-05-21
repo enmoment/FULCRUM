@@ -58,5 +58,3 @@ create table Account
     comment     text
 );
 select * from Account;
-
-
