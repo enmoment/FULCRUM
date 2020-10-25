@@ -10,3 +10,5 @@ wtforms
 moviepy
 numpy
 SQLAlchemy
+bottle
+psycopg2
